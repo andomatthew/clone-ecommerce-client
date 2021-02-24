@@ -23,13 +23,16 @@ export default {
   data () {
     return {
       id: localStorage.getItem('id')
+      // cart: this.cart()
     }
-  },
-  methods: {
-
   },
   computed: {
     cart () {
+      return this.$store.state.cart
+    }
+  },
+  watch: {
+    cart: function () {
       return this.$store.state.cart
     }
   },

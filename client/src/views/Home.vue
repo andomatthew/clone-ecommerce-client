@@ -25,6 +25,11 @@ export default {
       return this.$store.state.products
     }
   },
+  watch: {
+    products () {
+      return this.$store.state.products
+    }
+  },
   created () {
     this.$store.dispatch('fetchProducts')
   }

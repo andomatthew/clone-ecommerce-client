@@ -29,6 +29,21 @@ export default new Vuex.Store({
     },
     setNewProduct (state, product) {
       state.cart.push(product)
+    },
+    setQuantity (state, product) {
+      const updatedCart = state.cart.filter(el => {
+        if (el.id === product.id) {
+          el = product
+        }
+        return el
+      })
+      state.cart = updatedCart
+    },
+    resetCart (state, data) {
+      const newCart = state.cart.filter(el => {
+        if (el.userId !== data.userId && el.productId !== data.productId) return el
+      })
+      state.cart = newCart
     }
   },
   actions: {
@@ -99,6 +114,7 @@ export default new Vuex.Store({
         })
     },
     addToCart (context, product) {
+      console.log(product)
       axios({
         url: `/cart/${product.userId}`,
         method: 'POST',
@@ -112,14 +128,39 @@ export default new Vuex.Store({
           }
         })
         .catch((xhr, status) => {
-          console.log(xhr)
+          console.log(xhr.response.data)
         })
     },
-    addQuantity (context, data) {
-
+    setQuantity (context, data) {
+      axios({
+        url: `/cart/${localStorage.getItem('id')}`,
+        method: 'PATCH',
+        headers: { access_token: localStorage.getItem('access_token') },
+        data
+      })
+        .then(response => {
+          const updatedProduct = response.data[1][0]
+          context.commit('setQuantity', updatedProduct)
+        })
+        .catch((xhr, response) => {
+          console.log(xhr.response.data)
+        })
     },
-    removeQuantity (context, data) {
-
+    removeCart (context, data) {
+      axios({
+        url: `/cart/${localStorage.getItem('id')}`,
+        method: 'DELETE',
+        headers: { access_token: localStorage.getItem('access_token') },
+        data
+      })
+        .then(response => {
+          // router.push({ path: `/cart/${localStorage.getItem('id')}` })
+          console.log('ok')
+          context.commit('resetCart', data)
+        })
+        .catch((xhr, response) => {
+          console.log(xhr)
+        })
     }
   },
   modules: {

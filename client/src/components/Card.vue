@@ -13,7 +13,7 @@
         <span> Price: Rp.{{product.price}}</span>
         <p> Stocks: {{product.stocks}}</p>
       </div>
-      <md-button @click.prevent="addToCart" class="md-icon-button">
+      <md-button v-if="'Home'.includes($route.name)" @click.prevent="addToCart" class="md-icon-button">
         <md-icon class="md-primary">add_shopping_cart</md-icon>
       </md-button>
     </md-list-item>

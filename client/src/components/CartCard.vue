@@ -10,15 +10,18 @@
       <!--card-->
       <div class="md-list-item-text">
         <span> Name: {{product[0].name}}</span>
-        <span> Price: Rp.{{product[0].price}}</span>
+        <span> Price: Rp.{{product[0].price * this.currentQuantity}}</span>
         <p> Stocks: {{product[0].stocks}}</p>
-        <span>Quantity: {{product[1]}}</span>
+        <span>Quantity: {{this.currentQuantity}}</span>
       </div>
-      <md-button class="md-icon-button">
+      <md-button @click.prevent="removeQuantity" class="md-icon-button">
         <md-icon class="md-primary">remove</md-icon>
       </md-button>
-      <md-button class="md-icon-button">
+      <md-button @click.prevent="addQuantity" class="md-icon-button">
         <md-icon class="md-primary">add</md-icon>
+      </md-button>
+      <md-button @click.prevent="removeCart" class="md-icon-button">
+        <md-icon class="md-primary">delete</md-icon>
       </md-button>
     </md-list-item>
   </div>
@@ -30,17 +33,36 @@ export default {
   props: ['product'],
   data () {
     return {
-      quantity: 1
+      quantity: 1,
+      currentQuantity: this.product[1]
     }
   },
   methods: {
     addQuantity () {
-      const newQuantity = { quantity: this.product.quantity + 1 }
-      this.$store.dispatch('addQuantity', newQuantity)
+      if (this.currentQuantity > this.product[0].stocks) {
+        this.currentQuantity -= 1
+      } else {
+        this.currentQuantity += 1
+        const newQuantity = { quantity: this.product[1] + 1, productId: this.product[0].id }
+        this.$store.dispatch('setQuantity', newQuantity)
+      }
     },
     removeQuantity () {
-      const newQuantity = { quantity: this.product.quantity + 1 }
-      this.$store.dispatch('removeQuantity', newQuantity)
+      this.currentQuantity -= 1
+      const newQuantity = { quantity: this.product[1] - 1, productId: this.product[0].id }
+      this.$store.dispatch('setQuantity', newQuantity)
+    },
+    removeCart () {
+      const cartData = {
+        userId: localStorage.getItem('id'),
+        productId: this.product[0].id
+      }
+      this.$store.dispatch('removeCart', cartData)
+    }
+  },
+  watch: {
+    product: function () {
+      this.product[1] = this.currentQuantity
     }
   }
 }
