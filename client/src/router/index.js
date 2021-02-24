@@ -12,12 +12,26 @@ const routes = [
   {
     path: '/',
     name: 'Root',
-    component: Root
+    component: Root,
+    beforeEnter (to, from, next) {
+      if (!localStorage.getItem('access_token')) {
+        next()
+      } else if (localStorage.getItem('access_token')) {
+        next({ path: '/home' })
+      }
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    component: LoginPage
+    component: LoginPage,
+    beforeEnter (to, from, next) {
+      if (from.path !== '/') {
+        next({ path: '/home' })
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/register',
@@ -30,7 +44,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/cart/:email',
+    path: '/cart/:id',
     name: 'Cart',
     component: Cart
   }

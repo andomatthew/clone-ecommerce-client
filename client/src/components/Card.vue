@@ -9,10 +9,13 @@
       </md-card>
       <!--card-->
       <div class="md-list-item-text">
-        <span>{{product.name}}</span>
-        <span>{{product.price}}</span>
-        <p>{{product.stocks}}</p>
+        <span> Name: {{product.name}}</span>
+        <span> Price: Rp.{{product.price}}</span>
+        <p> Stocks: {{product.stocks}}</p>
       </div>
+      <md-button @click.prevent="addToCart" class="md-icon-button">
+        <md-icon class="md-primary">add_shopping_cart</md-icon>
+      </md-button>
     </md-list-item>
   </div>
 </template>
@@ -20,7 +23,22 @@
 <script>
 export default {
   name: 'Card',
-  props: ['product']
+  props: ['product'],
+  data () {
+    return {
+      quantity: 1
+    }
+  },
+  methods: {
+    addToCart () {
+      const data = {
+        userId: localStorage.getItem('id'),
+        productId: this.product.id,
+        quantity: this.quantity
+      }
+      this.$store.dispatch('addToCart', data)
+    }
+  }
 }
 </script>
 
