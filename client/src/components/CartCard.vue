@@ -13,7 +13,6 @@
         <span> Price: Rp.{{product[0].price * this.currentQuantity}}</span>
         <p> Stocks: {{product[0].stocks}}</p>
         <span>Quantity: {{this.currentQuantity}}</span>
-        <span>{{test}}</span>
       </div>
       <md-button @click.prevent="removeQuantity" class="md-icon-button">
         <md-icon class="md-primary">remove</md-icon>
