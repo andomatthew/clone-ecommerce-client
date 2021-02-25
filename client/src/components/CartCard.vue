@@ -13,6 +13,7 @@
         <span> Price: Rp.{{product[0].price * this.currentQuantity}}</span>
         <p> Stocks: {{product[0].stocks}}</p>
         <span>Quantity: {{this.currentQuantity}}</span>
+        <span>{{test}}</span>
       </div>
       <md-button @click.prevent="removeQuantity" class="md-icon-button">
         <md-icon class="md-primary">remove</md-icon>
@@ -39,13 +40,11 @@ export default {
   },
   methods: {
     addQuantity () {
-      if (this.currentQuantity > this.product[0].stocks) {
-        this.currentQuantity -= 1
-      } else {
-        this.currentQuantity += 1
-        const newQuantity = { quantity: this.product[1] + 1, productId: this.product[0].id }
-        this.$store.dispatch('setQuantity', newQuantity)
-      }
+      const newQuantity = { quantity: this.product[1] + 1, productId: this.product[0].id }
+      this.$store.dispatch('setQuantity', newQuantity)
+        .then(_ => {
+          this.cart()
+        })
     },
     removeQuantity () {
       this.currentQuantity -= 1
@@ -60,9 +59,12 @@ export default {
       this.$store.dispatch('removeCart', cartData)
     }
   },
-  watch: {
-    product: function () {
-      this.product[1] = this.currentQuantity
+  computed: {
+    cart () {
+      return this.$store.state.cart
+    },
+    test () {
+      return this.$store.getters.test
     }
   }
 }

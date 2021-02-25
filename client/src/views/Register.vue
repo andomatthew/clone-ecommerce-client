@@ -21,10 +21,9 @@
             </div>
             <md-card-actions>
               <md-button type="submit" class="md-primary">Register</md-button>
-                <!-- <md-snackbar :md-position="position" :md-active.sync="showSnackbar" md-persistent>
-                <span>{{errorMessage || 'Success'}}</span>
-                <md-button v-if="errorMessage" class="md-primary" @click="showSnackbar = false">Retry</md-button>
-              </md-snackbar> -->
+              <md-snackbar v-if="errorMessage" :md-position="position" :md-active.sync="errorMessage" md-persistent :md-duration="isInfinity ? Infinity : duration">
+                  <span>{{errorMessage}}</span>
+              </md-snackbar>
             </md-card-actions>
           </div>
         </form>
@@ -54,6 +53,11 @@ export default {
         password: this.password
       }
       this.$store.dispatch('registerCustomer', newCustomer)
+    }
+  },
+  computed: {
+    errorMessage () {
+      return this.$store.state.errorMessage
     }
   }
 }

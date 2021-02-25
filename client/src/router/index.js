@@ -14,10 +14,10 @@ const routes = [
     name: 'Root',
     component: Root,
     beforeEnter (to, from, next) {
-      if (!localStorage.getItem('access_token')) {
+      if (localStorage.getItem('access_token')) {
+        next(router.push('/home'))
+      } else {
         next()
-      } else if (localStorage.getItem('access_token')) {
-        next({ path: '/home' })
       }
     }
   },
@@ -26,8 +26,8 @@ const routes = [
     name: 'Login',
     component: LoginPage,
     beforeEnter (to, from, next) {
-      if (from.path !== '/') {
-        next({ path: '/home' })
+      if (localStorage.getItem('access_token')) {
+        next(router.push('/home'))
       } else {
         next()
       }
@@ -36,15 +36,29 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: RegisterPage
+    component: RegisterPage,
+    beforeEnter (to, from, next) {
+      if (localStorage.getItem('access_token')) {
+        next(router.push('/home'))
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter (to, from, next) {
+      if (!localStorage.getItem('access_token')) {
+        next(router.push('/'))
+      } else {
+        next()
+      }
+    }
   },
   {
-    path: '/cart/:id',
+    path: '/carts',
     name: 'Cart',
     component: Cart
   }

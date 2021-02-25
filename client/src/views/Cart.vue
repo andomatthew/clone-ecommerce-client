@@ -1,7 +1,7 @@
 <template>
   <div>
     <HomeTabs/>
-    <h1>this is cart for user with user id {{this.id}}</h1>
+    <h1>Hello</h1>
     <md-list class="md-triple-line"
       v-for="(product, index) in cart" :key="product.id"
     >
@@ -22,17 +22,11 @@ export default {
   },
   data () {
     return {
-      id: localStorage.getItem('id')
-      // cart: this.cart()
+      // id: localStorage.getItem('id')
     }
   },
   computed: {
     cart () {
-      return this.$store.state.cart
-    }
-  },
-  watch: {
-    cart: function () {
       return this.$store.state.cart
     }
   },

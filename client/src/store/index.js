@@ -12,7 +12,8 @@ export default new Vuex.Store({
       id: null,
       email: null
     },
-    cart: []
+    cart: [],
+    errorMessage: ''
   },
   mutations: {
     setCustomerLogin (state, customer) {
@@ -44,6 +45,9 @@ export default new Vuex.Store({
         if (el.userId !== data.userId && el.productId !== data.productId) return el
       })
       state.cart = newCart
+    },
+    setErrorMessage (state, message) {
+      state.errorMessage = message
     }
   },
   actions: {
@@ -57,7 +61,8 @@ export default new Vuex.Store({
           router.push({ path: '/' })
         })
         .catch((xhr, status) => {
-          console.log(xhr)
+          const message = xhr.response.data.message
+          context.commit('setErrorMessage', message)
         })
     },
     loginCustomer (context, customer) {
@@ -69,12 +74,12 @@ export default new Vuex.Store({
         .then(response => {
           const customer = response.data
           localStorage.setItem('access_token', customer.access_token)
-          localStorage.setItem('id', customer.id)
           context.commit('setCustomerLogin', { id: customer.id, email: customer.email })
           router.push({ path: '/home' })
         })
         .catch((xhr, status) => {
-          console.log(xhr.response)
+          const message = xhr.response.data.message
+          context.commit('setErrorMessage', message)
         })
     },
     logout (context) {
@@ -90,7 +95,6 @@ export default new Vuex.Store({
       })
         .then(response => {
           const products = response.data
-          console.log(products)
           context.commit('setProducts', products)
         })
         .catch((xhr, status) => {
@@ -98,25 +102,23 @@ export default new Vuex.Store({
         })
     },
     showCart (context) {
-      console.log('masuk')
       axios({
-        url: `/cart/${localStorage.getItem('id')}`,
+        url: '/carts',
         method: 'GET',
         headers: { access_token: localStorage.getItem('access_token') }
       })
         .then(response => {
-          console.log(response.data)
           const cart = response.data
+          console.log(cart)
           context.commit('setCart', cart)
         })
         .catch((xhr, response) => {
-          console.log(response)
+          console.log(xhr.response)
         })
     },
     addToCart (context, product) {
-      console.log(product)
       axios({
-        url: `/cart/${product.userId}`,
+        url: '/carts',
         method: 'POST',
         headers: { access_token: localStorage.getItem('access_token') },
         data: product
@@ -133,7 +135,7 @@ export default new Vuex.Store({
     },
     setQuantity (context, data) {
       axios({
-        url: `/cart/${localStorage.getItem('id')}`,
+        url: '/carts',
         method: 'PATCH',
         headers: { access_token: localStorage.getItem('access_token') },
         data
@@ -148,13 +150,12 @@ export default new Vuex.Store({
     },
     removeCart (context, data) {
       axios({
-        url: `/cart/${localStorage.getItem('id')}`,
+        url: '/carts',
         method: 'DELETE',
         headers: { access_token: localStorage.getItem('access_token') },
         data
       })
         .then(response => {
-          // router.push({ path: `/cart/${localStorage.getItem('id')}` })
           console.log('ok')
           context.commit('resetCart', data)
         })
@@ -163,6 +164,9 @@ export default new Vuex.Store({
         })
     }
   },
-  modules: {
+  getters: {
+    test: function (state) {
+      return state.cart[0].quantity
+    }
   }
 })

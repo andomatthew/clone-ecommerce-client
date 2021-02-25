@@ -32,11 +32,15 @@ export default {
   methods: {
     addToCart () {
       const data = {
-        userId: localStorage.getItem('id'),
         productId: this.product.id,
         quantity: this.quantity
       }
       this.$store.dispatch('addToCart', data)
+    }
+  },
+  computed: {
+    cart () {
+      return this.$store.state.cart
     }
   }
 }
